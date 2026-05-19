@@ -755,10 +755,7 @@
       Veja o arquivo <strong>README.md</strong> para instruções de como criar.
     </div>
 
-    <div class="input-group">
-      <label>URL do Apps Script</label>
-      <input type="url" id="cfg-url" placeholder="https://script.google.com/macros/s/AKfycbxz_dEkJKtrIX_LzjY5bZOg3htJ28bRTi6M7STUe4n6ja8EMLIFk_SCGkoR-bGuEcT1/exec" style="width:100%">
-    </div>
+ <input type="url" id="cfg-url" style="width:100%">
 
     <div class="input-group" style="margin-top:14px">
       <label>Senha do "Quem cria" (admin)</label>
@@ -783,7 +780,7 @@
 <script>
 // ─── CONFIG ─────────────────────────────────────────────────────────────────
 let CFG = {
-scriptUrl: localStorage.getItem('scriptUrl') || 'https://script.google.com/macros/s/AKfycbxz_dEkJKtrIX_LzjY5bZOg3htJ28bRTi6M7STUe4n6ja8EMLIFk_SCGkoR-bGuEcT1/exec',
+scriptUrl: localStorage.getItem('scriptUrl') || 'https://script.google.com/macros/s/AKfycby-nLGlwkHBHCuIjayDn0_Uf7mnNbuFPwv4NbayiLjSWrpH6suvneXb2ShE0xPT9Scj/exec',
   pwAdmin:   localStorage.getItem('pwAdmin')   || 'admin123',
   pwExec:    localStorage.getItem('pwExec')    || 'exec123',
 };
