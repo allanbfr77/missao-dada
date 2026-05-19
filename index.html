@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MISSÃO DADA!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0e0c;
+    --surface: #1a1916;
+    --surface2: #242320;
+    --border: #2e2c28;
+    --accent: #e8c547;
+    --accent2: #e87d47;
+    --text: #f0ece3;
+    --muted: #7a7669;
+    --green: #6fcf7a;
+    --orange: #e8a247;
+    --red: #e86047;
+    --blue: #47a8e8;
+    --radius: 12px;
+    --font-mono: 'DM Mono', monospace;
+    --font-serif: 'Fraunces', serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── LOGIN ── */
+  #login-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+    background: var(--bg);
+    background-image: radial-gradient(ellipse 60% 40% at 50% 0%, #e8c54712 0%, transparent 70%);
+  }
+
+  .login-box {
+    width: 100%;
+    max-width: 360px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px 32px;
+    animation: fadeUp .5s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform: translateY(20px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+
+  .login-title {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    font-weight: 300;
+    color: var(--accent);
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+  }
+
+  .login-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 32px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+  }
+
+  .role-pick {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .role-btn {
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 12px;
+    cursor: pointer;
+    transition: all .2s;
+    text-align: center;
+    color: var(--text);
+  }
+
+  .role-btn:hover { border-color: var(--accent); }
+  .role-btn.active { border-color: var(--accent); background: #e8c54718; }
+
+  .role-btn .role-icon { font-size: 1.8rem; display: block; margin-bottom: 6px; }
+  .role-btn .role-name { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .role-btn.active .role-name { color: var(--accent); }
+
+  .input-group { margin-bottom: 16px; }
+
+  .input-group label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .input-group input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    outline: none;
+    transition: border-color .2s;
+  }
+
+  .input-group input:focus { border-color: var(--accent); }
+
+  .btn-primary {
+    width: 100%;
+    background: var(--accent);
+    color: #0f0e0c;
+    border: none;
+    border-radius: 8px;
+    padding: 14px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all .2s;
+  }
+
+  .btn-primary:hover { background: #f0d060; transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+
+  .login-error {
+    color: var(--red);
+    font-size: 12px;
+    margin-top: 12px;
+    text-align: center;
+    display: none;
+  }
+
+  /* ── APP ── */
+  #app { display: none; min-height: 100vh; }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #0f0e0cee;
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .topbar-title {
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    font-weight: 300;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+
+  .badge-role {
+    font-size: 10px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .badge-role.admin { border-color: var(--accent); color: var(--accent); }
+  .badge-role.executor { border-color: var(--blue); color: var(--blue); }
+
+  .btn-icon {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all .2s;
+    color: var(--text);
+  }
+
+  .btn-icon:hover { border-color: var(--muted); }
+
+  /* ── TABS ── */
+  .tabs-bar {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    background: var(--bg);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .tabs-bar::-webkit-scrollbar { display: none; }
+
+  .tab {
+    padding: 14px 20px 12px;
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all .2s;
+    position: relative;
+  }
+
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .tab .count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface2);
+    border-radius: 20px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    font-size: 10px;
+    margin-left: 6px;
+  }
+
+  .tab.active .count { background: var(--accent); color: #0f0e0c; }
+
+  /* ── CONTENT ── */
+  .content { padding: 20px; max-width: 680px; margin: 0 auto; }
+
+  /* ── NEW TASK (admin only) ── */
+  .new-task-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 24px;
+    animation: fadeUp .3s ease;
+  }
+
+  .new-task-box h3 {
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: 1rem;
+    color: var(--accent);
+    margin-bottom: 14px;
+    letter-spacing: -.2px;
+  }
+
+  textarea {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    resize: none;
+    outline: none;
+    transition: border-color .2s;
+    min-height: 80px;
+  }
+
+  textarea:focus { border-color: var(--accent); }
+
+  .new-task-meta {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color .2s;
+  }
+
+  select:focus { border-color: var(--accent); }
+
+  .btn-add {
+    background: var(--accent);
+    color: #0f0e0c;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all .2s;
+    margin-left: auto;
+  }
+
+  .btn-add:hover { background: #f0d060; }
+  .btn-add:disabled { opacity: .4; cursor: not-allowed; }
+
+  /* ── TASK CARD ── */
+  .task-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: border-color .2s;
+    animation: fadeUp .3s ease;
+  }
+
+  .task-card:hover { border-color: var(--border); }
+  .task-card.priority-alta { border-left: 3px solid var(--red); }
+  .task-card.priority-media { border-left: 3px solid var(--orange); }
+  .task-card.priority-baixa { border-left: 3px solid var(--blue); }
+  .task-card.done { opacity: .55; }
+
+  .task-header {
+    padding: 16px 16px 12px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .task-check {
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    border: 2px solid var(--border);
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    transition: all .2s;
+    margin-top: 1px;
+    background: transparent;
+  }
+
+  .task-check:hover { border-color: var(--green); }
+  .task-check.checked { background: var(--green); border-color: var(--green); color: #0f0e0c; }
+
+  .task-body { flex: 1; min-width: 0; }
+
+  .task-text {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--text);
+    word-break: break-word;
+  }
+
+  .task-text.done-text { text-decoration: line-through; color: var(--muted); }
+
+  .task-meta-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .tag {
+    font-size: 10px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .tag-alta { color: var(--red); border-color: var(--red); }
+  .tag-media { color: var(--orange); border-color: var(--orange); }
+  .tag-baixa { color: var(--blue); border-color: var(--blue); }
+  .tag-pendente { color: var(--orange); border-color: var(--orange); }
+  .tag-andamento { color: var(--blue); border-color: var(--blue); }
+  .tag-concluida { color: var(--green); border-color: var(--green); }
+
+  .task-date { font-size: 10px; color: var(--muted); margin-left: auto; white-space: nowrap; }
+
+  .task-actions {
+    display: flex;
+    gap: 6px;
+    padding: 0 16px 12px;
+    flex-wrap: wrap;
+  }
+
+  .btn-sm {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all .2s;
+  }
+
+  .btn-sm:hover { color: var(--text); border-color: var(--muted); }
+  .btn-sm.active { color: var(--accent); border-color: var(--accent); }
+  .btn-sm.green { color: var(--green); border-color: var(--green); }
+  .btn-sm.orange { color: var(--orange); border-color: var(--orange); }
+
+  /* ── COMMENTS ── */
+  .comments-section {
+    border-top: 1px solid var(--border);
+    padding: 14px 16px;
+    display: none;
+  }
+
+  .comments-section.open { display: block; }
+
+  .comment {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+    animation: fadeUp .2s ease;
+  }
+
+  .comment-avatar {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    flex-shrink: 0;
+    font-weight: 500;
+  }
+
+  .avatar-admin { background: #e8c54722; color: var(--accent); border: 1px solid var(--accent); }
+  .avatar-executor { background: #47a8e822; color: var(--blue); border: 1px solid var(--blue); }
+
+  .comment-content { flex: 1; min-width: 0; }
+
+  .comment-author {
+    font-size: 10px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .comment-author.admin { color: var(--accent); }
+  .comment-author.executor { color: var(--blue); }
+
+  .comment-text {
+    font-size: 13px;
+    line-height: 1.5;
+    color: #c8c4bb;
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    word-break: break-word;
+  }
+
+  .comment-time { font-size: 10px; color: var(--muted); margin-top: 4px; }
+
+  .comment-input-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .comment-input-row input {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    outline: none;
+    transition: border-color .2s;
+  }
+
+  .comment-input-row input:focus { border-color: var(--accent); }
+
+  .btn-send {
+    background: var(--accent);
+    color: #0f0e0c;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+
+  .btn-send:hover { background: #f0d060; }
+  .btn-send:disabled { opacity: .4; cursor: not-allowed; }
+
+  /* ── EMPTY ── */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+  }
+
+  .empty-icon { font-size: 2.5rem; margin-bottom: 12px; opacity: .4; }
+  .empty-text { font-size: 13px; }
+
+  /* ── LOADING ── */
+  .loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: #0f0e0ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    display: none;
+  }
+
+  .spinner {
+    width: 36px; height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-size: 13px;
+    color: var(--text);
+    z-index: 9999;
+    transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.success { border-color: var(--green); color: var(--green); }
+  .toast.error { border-color: var(--red); color: var(--red); }
+
+  /* ── CONFIG MODAL ── */
+  .modal-bg {
+    position: fixed;
+    inset: 0;
+    background: #0f0e0ccc;
+    z-index: 500;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-bg.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    width: 100%;
+    max-width: 420px;
+    animation: fadeUp .3s ease;
+  }
+
+  .modal h3 {
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: 1.2rem;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+
+  .modal-close {
+    float: right;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 18px;
+    cursor: pointer;
+    margin-top: -4px;
+  }
+
+  .config-note {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 16px;
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 12px;
+    border: 1px solid var(--border);
+  }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* ── REFRESH BTN ── */
+  .btn-refresh {
+    display: flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all .2s;
+    margin-bottom: 20px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .btn-refresh:hover { color: var(--text); border-color: var(--muted); }
+  .btn-refresh .spin-icon { display: inline-block; transition: transform .3s; }
+  .btn-refresh:hover .spin-icon { transform: rotate(180deg); }
+
+  @media (max-width: 480px) {
+    .content { padding: 14px; }
+    .topbar { padding: 12px 14px; }
+    .topbar-title { font-size: 1.1rem; }
+    .task-text { font-size: 13px; }
+    .comment-text { font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-title">MISSÃO DADA!</div>
+    <div class="login-sub">Sistema de acompanhamento</div>
+
+    <div class="role-pick">
+      <div class="role-btn active" data-role="admin" onclick="selectRole('admin')">
+        <span class="role-icon">✍️</span>
+        <span class="role-name">Quem cria</span>
+      </div>
+      <div class="role-btn" data-role="executor" onclick="selectRole('executor')">
+        <span class="role-icon">⚡</span>
+        <span class="role-name">Quem executa</span>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>Senha</label>
+      <input type="password" id="pw-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+
+    <button class="btn-primary" onclick="doLogin()">Entrar</button>
+    <div class="login-error" id="login-error">Senha incorreta</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="topbar">
+    <div class="topbar-title">MISSÃO DADA!</div>
+    <div class="topbar-right">
+      <span class="badge-role" id="role-badge"></span>
+      <button class="btn-icon" title="Configurações" onclick="openConfig()">⚙️</button>
+      <button class="btn-icon" title="Sair" onclick="logout()">🚪</button>
+    </div>
+  </div>
+
+  <div class="tabs-bar">
+    <div class="tab active" data-tab="pendente" onclick="switchTab('pendente')">Pendentes <span class="count" id="cnt-pendente">0</span></div>
+    <div class="tab" data-tab="andamento" onclick="switchTab('andamento')">Em andamento <span class="count" id="cnt-andamento">0</span></div>
+    <div class="tab" data-tab="concluida" onclick="switchTab('concluida')">Concluídas <span class="count" id="cnt-concluida">0</span></div>
+    <div class="tab" data-tab="todas" onclick="switchTab('todas')">Todas <span class="count" id="cnt-todas">0</span></div>
+  </div>
+
+  <div class="content">
+    <!-- Nova tarefa (só admin vê) -->
+    <div id="new-task-box" class="new-task-box" style="display:none">
+      <h3>Nova tarefa</h3>
+      <textarea id="new-task-text" placeholder="Descreva a tarefa..."></textarea>
+      <div class="new-task-meta">
+        <select id="new-task-priority">
+          <option value="media">🟡 Média</option>
+          <option value="alta">🔴 Alta</option>
+          <option value="baixa">🔵 Baixa</option>
+        </select>
+        <button class="btn-add" id="btn-add-task" onclick="addTask()">+ Adicionar</button>
+      </div>
+    </div>
+
+    <button class="btn-refresh" onclick="loadTasks()">
+      <span class="spin-icon">↻</span> Atualizar tarefas
+    </button>
+
+    <div id="tasks-list"></div>
+  </div>
+</div>
+
+<!-- CONFIG MODAL -->
+<div class="modal-bg" id="config-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeConfig()">✕</button>
+    <h3>Configurações</h3>
+
+    <div class="config-note">
+      Cole abaixo a URL do seu Google Apps Script.<br>
+      Veja o arquivo <strong>README.md</strong> para instruções de como criar.
+    </div>
+
+    <div class="input-group">
+      <label>URL do Apps Script</label>
+      <input type="url" id="cfg-url" placeholder="https://script.google.com/macros/s/..." style="width:100%">
+    </div>
+
+    <div class="input-group" style="margin-top:14px">
+      <label>Senha do "Quem cria" (admin)</label>
+      <input type="password" id="cfg-pw-admin" placeholder="••••••••" style="width:100%">
+    </div>
+
+    <div class="input-group" style="margin-top:14px">
+      <label>Senha do "Quem executa"</label>
+      <input type="password" id="cfg-pw-exec" placeholder="••••••••" style="width:100%">
+    </div>
+
+    <button class="btn-primary" style="margin-top:20px" onclick="saveConfig()">Salvar</button>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loading"><div class="spinner"></div></div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── CONFIG ─────────────────────────────────────────────────────────────────
+let CFG = {
+  scriptUrl: localStorage.getItem('scriptUrl') || 'https://script.google.com/macros/s/AKfycbxMzVOmebLC3VLd5vjZqemg1Lv4CHbQHbAeJ_6Taltsfz0evLcEWJWSSBOSXeVA/exec',
+  pwAdmin:   localStorage.getItem('pwAdmin')   || 'admin123',
+  pwExec:    localStorage.getItem('pwExec')    || 'exec123',
+};
+
+let currentRole = 'admin';
+let currentTab  = 'pendente';
+let allTasks    = [];
+let openComments = new Set(); // IDs com comentários abertos
+
+// ─── LOGIN ───────────────────────────────────────────────────────────────────
+function selectRole(role) {
+  currentRole = role;
+  document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`[data-role="${role}"]`).classList.add('active');
+}
+
+function doLogin() {
+  const pw = document.getElementById('pw-input').value;
+  const err = document.getElementById('login-error');
+  if (pw === CFG.pwAdmin && currentRole === 'admin') {
+    startApp('admin');
+  } else if (pw === CFG.pwExec && currentRole === 'executor') {
+    startApp('executor');
+  } else {
+    err.style.display = 'block';
+    setTimeout(() => err.style.display = 'none', 3000);
+  }
+}
+
+function startApp(role) {
+  currentRole = role;
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+
+  const badge = document.getElementById('role-badge');
+  if (role === 'admin') {
+    badge.textContent = '✍️ Quem cria';
+    badge.className = 'badge-role admin';
+    document.getElementById('new-task-box').style.display = 'block';
+  } else {
+    badge.textContent = '⚡ Quem executa';
+    badge.className = 'badge-role executor';
+  }
+
+  loadTasks();
+}
+
+function logout() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('pw-input').value = '';
+  allTasks = [];
+}
+
+// ─── TABS ────────────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+  renderTasks();
+}
+
+// ─── API ─────────────────────────────────────────────────────────────────────
+async function apiCall(action, data = {}) {
+  if (!CFG.scriptUrl) {
+    showToast('Configure a URL do Apps Script primeiro ⚙️', 'error');
+    openConfig();
+    throw new Error('no-url');
+  }
+
+  const url = new URL(CFG.scriptUrl);
+  url.searchParams.set('action', action);
+
+  const method = action === 'getTasks' ? 'GET' : 'POST';
+
+  let opts = { method };
+
+  if (method === 'POST') {
+    opts.headers = { 'Content-Type': 'text/plain' };
+    opts.body = JSON.stringify({ action, ...data });
+  }
+
+  const res  = await fetch(url.toString(), opts);
+  const text = await res.text();
+
+  try { return JSON.parse(text); }
+  catch { throw new Error('Resposta inválida: ' + text.slice(0, 100)); }
+}
+
+// ─── LOAD TASKS ───────────────────────────────────────────────────────────────
+async function loadTasks() {
+  if (!CFG.scriptUrl) {
+    // Demo mode
+    if (allTasks.length === 0) loadDemoTasks();
+    else renderTasks();
+    return;
+  }
+  showLoading(true);
+  try {
+    const data = await apiCall('getTasks');
+    allTasks = data.tasks || [];
+    renderTasks();
+    updateCounts();
+  } catch(e) {
+    if (e.message !== 'no-url') showToast('Erro ao carregar: ' + e.message, 'error');
+  } finally {
+    showLoading(false);
+  }
+}
+
+function loadDemoTasks() {
+  allTasks = [
+    { id: '1', text: 'Enviar proposta para cliente ABC até sexta-feira', priority: 'alta', status: 'pendente', createdAt: '19/05/2025 10:00', comments: [] },
+    { id: '2', text: 'Revisar contrato de prestação de serviços', priority: 'media', status: 'andamento', createdAt: '18/05/2025 14:30', comments: [
+      { author: 'admin', text: 'Precisa revisar a cláusula 5.', time: '18/05/2025 15:00' },
+      { author: 'executor', text: 'Entendido, vou verificar.', time: '18/05/2025 15:30' }
+    ]},
+    { id: '3', text: 'Comprar material de escritório', priority: 'baixa', status: 'concluida', createdAt: '17/05/2025 09:00', comments: [] },
+  ];
+  renderTasks();
+  updateCounts();
+  showToast('Modo demo ativo — configure o Apps Script ⚙️', 'error');
+}
+
+// ─── RENDER ───────────────────────────────────────────────────────────────────
+function renderTasks() {
+  const list = document.getElementById('tasks-list');
+  const filtered = allTasks.filter(t =>
+    currentTab === 'todas' ? true : t.status === currentTab
+  );
+
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">${currentTab === 'concluida' ? '🎉' : '📭'}</div>
+      <div class="empty-text">${currentTab === 'concluida' ? 'Nenhuma tarefa concluída ainda' : 'Nenhuma tarefa aqui'}</div>
+    </div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(t => buildTaskHTML(t)).join('');
+  updateCounts();
+}
+
+function buildTaskHTML(t) {
+  const priorityMap = { alta: 'Alta', media: 'Média', baixa: 'Baixa' };
+  const statusMap   = { pendente: 'Pendente', andamento: 'Em andamento', concluida: 'Concluída' };
+  const isDone      = t.status === 'concluida';
+  const comments    = t.comments || [];
+  const cOpen       = openComments.has(t.id);
+
+  const statusBtns = currentRole === 'executor' ? `
+    <button class="btn-sm ${t.status==='pendente'?'active':''}" onclick="setStatus('${t.id}','pendente')">Pendente</button>
+    <button class="btn-sm ${t.status==='andamento'?'active':''}" onclick="setStatus('${t.id}','andamento')">Em andamento</button>
+    <button class="btn-sm green ${isDone?'active':''}" onclick="setStatus('${t.id}','concluida')">✓ Concluída</button>
+  ` : `
+    <button class="btn-sm orange" onclick="deleteTask('${t.id}')">Excluir</button>
+  `;
+
+  const commentsHTML = comments.map(c => `
+    <div class="comment">
+      <div class="comment-avatar ${c.author === 'admin' ? 'avatar-admin' : 'avatar-executor'}">
+        ${c.author === 'admin' ? '✍' : '⚡'}
+      </div>
+      <div class="comment-content">
+        <div class="comment-author ${c.author}">${c.author === 'admin' ? 'Quem cria' : 'Quem executa'}</div>
+        <div class="comment-text">${escHtml(c.text)}</div>
+        <div class="comment-time">${c.time}</div>
+      </div>
+    </div>
+  `).join('');
+
+  return `
+  <div class="task-card priority-${t.priority} ${isDone?'done':''}" id="card-${t.id}">
+    <div class="task-header">
+      <div class="task-check ${isDone?'checked':''}" onclick="toggleDone('${t.id}')">
+        ${isDone ? '✓' : ''}
+      </div>
+      <div class="task-body">
+        <div class="task-text ${isDone?'done-text':''}">${escHtml(t.text)}</div>
+        <div class="task-meta-row">
+          <span class="tag tag-${t.priority}">${priorityMap[t.priority]}</span>
+          <span class="tag tag-${t.status}">${statusMap[t.status]}</span>
+          ${comments.length ? `<span style="font-size:10px;color:var(--muted)">💬 ${comments.length}</span>` : ''}
+          <span class="task-date">${t.createdAt}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task-actions">
+      ${statusBtns}
+      <button class="btn-sm ${cOpen?'active':''}" onclick="toggleComments('${t.id}')">
+        💬 ${comments.length ? comments.length : ''} Comentários
+      </button>
+    </div>
+
+    <div class="comments-section ${cOpen?'open':''}" id="comments-${t.id}">
+      ${commentsHTML}
+      <div class="comment-input-row">
+        <input type="text" placeholder="Escrever comentário..." id="comment-input-${t.id}"
+          onkeydown="if(event.key==='Enter')sendComment('${t.id}')">
+        <button class="btn-send" onclick="sendComment('${t.id}')">Enviar</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function updateCounts() {
+  ['pendente','andamento','concluida'].forEach(s => {
+    document.getElementById(`cnt-${s}`).textContent = allTasks.filter(t => t.status === s).length;
+  });
+  document.getElementById('cnt-todas').textContent = allTasks.length;
+}
+
+// ─── ACTIONS ─────────────────────────────────────────────────────────────────
+async function addTask() {
+  const text = document.getElementById('new-task-text').value.trim();
+  if (!text) { showToast('Digite a descrição da tarefa', 'error'); return; }
+  const priority = document.getElementById('new-task-priority').value;
+  const btn = document.getElementById('btn-add-task');
+  btn.disabled = true;
+
+  const now = new Date();
+  const createdAt = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
+  const newTask = { id: Date.now().toString(), text, priority, status: 'pendente', createdAt, comments: [] };
+
+  if (!CFG.scriptUrl) {
+    allTasks.unshift(newTask);
+    renderTasks(); updateCounts();
+    document.getElementById('new-task-text').value = '';
+    btn.disabled = false;
+    showToast('Tarefa adicionada (demo)');
+    return;
+  }
+
+  showLoading(true);
+  try {
+    await apiCall('addTask', { text, priority, createdAt });
+    await loadTasks();
+    document.getElementById('new-task-text').value = '';
+    showToast('Tarefa adicionada ✅');
+  } catch(e) {
+    showToast('Erro: ' + e.message, 'error');
+  } finally {
+    showLoading(false); btn.disabled = false;
+  }
+}
+
+async function setStatus(id, status) {
+  const task = allTasks.find(t => t.id === id);
+  if (!task) return;
+  task.status = status;
+
+  if (!CFG.scriptUrl) { renderTasks(); updateCounts(); showToast('Status atualizado'); return; }
+
+  showLoading(true);
+  try {
+    await apiCall('updateStatus', { id, status });
+    await loadTasks();
+    showToast('Status atualizado');
+  } catch(e) {
+    showToast('Erro: ' + e.message, 'error');
+  } finally { showLoading(false); }
+}
+
+function toggleDone(id) {
+  const task = allTasks.find(t => t.id === id);
+  if (!task) return;
+  if (currentRole === 'executor') {
+    setStatus(id, task.status === 'concluida' ? 'pendente' : 'concluida');
+  }
+}
+
+async function deleteTask(id) {
+  if (!confirm('Excluir esta tarefa?')) return;
+
+  if (!CFG.scriptUrl) {
+    allTasks = allTasks.filter(t => t.id !== id);
+    renderTasks(); updateCounts(); showToast('Tarefa excluída');
+    return;
+  }
+
+  showLoading(true);
+  try {
+    await apiCall('deleteTask', { id });
+    await loadTasks();
+    showToast('Tarefa excluída');
+  } catch(e) {
+    showToast('Erro: ' + e.message, 'error');
+  } finally { showLoading(false); }
+}
+
+function toggleComments(id) {
+  if (openComments.has(id)) openComments.delete(id);
+  else openComments.add(id);
+  renderTasks();
+  if (openComments.has(id)) {
+    setTimeout(() => document.getElementById(`comment-input-${id}`)?.focus(), 50);
+  }
+}
+
+async function sendComment(id) {
+  const input = document.getElementById(`comment-input-${id}`);
+  const text = input.value.trim();
+  if (!text) return;
+
+  const now = new Date();
+  const time = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
+  const comment = { author: currentRole, text, time };
+
+  if (!CFG.scriptUrl) {
+    const task = allTasks.find(t => t.id === id);
+    if (task) { task.comments = task.comments || []; task.comments.push(comment); }
+    input.value = '';
+    renderTasks();
+    setTimeout(() => {
+      openComments.add(id);
+      renderTasks();
+    }, 10);
+    return;
+  }
+
+  const btn = input.nextElementSibling;
+  btn.disabled = true;
+  try {
+    await apiCall('addComment', { taskId: id, author: currentRole, text, time });
+    await loadTasks();
+    openComments.add(id);
+    renderTasks();
+    showToast('Comentário enviado');
+  } catch(e) {
+    showToast('Erro: ' + e.message, 'error');
+  } finally { btn.disabled = false; }
+}
+
+// ─── CONFIG ───────────────────────────────────────────────────────────────────
+function openConfig() {
+  document.getElementById('cfg-url').value     = CFG.scriptUrl;
+  document.getElementById('cfg-pw-admin').value = CFG.pwAdmin;
+  document.getElementById('cfg-pw-exec').value  = CFG.pwExec;
+  document.getElementById('config-modal').classList.add('open');
+}
+
+function closeConfig() {
+  document.getElementById('config-modal').classList.remove('open');
+}
+
+function saveConfig() {
+  CFG.scriptUrl = document.getElementById('cfg-url').value.trim();
+  CFG.pwAdmin   = document.getElementById('cfg-pw-admin').value || 'admin123';
+  CFG.pwExec    = document.getElementById('cfg-pw-exec').value  || 'exec123';
+  localStorage.setItem('scriptUrl', CFG.scriptUrl);
+  localStorage.setItem('pwAdmin',   CFG.pwAdmin);
+  localStorage.setItem('pwExec',    CFG.pwExec);
+  closeConfig();
+  showToast('Configurações salvas ✅');
+  loadTasks();
+}
+
+// ─── UTILS ────────────────────────────────────────────────────────────────────
+function showLoading(on) {
+  document.getElementById('loading').style.display = on ? 'flex' : 'none';
+}
+
+let toastTimer;
+function showToast(msg, type = 'success') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show ' + type;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+</body>
+</html>
